@@ -1,12 +1,14 @@
-#!perl
-
+#!perl -T
+use 5.006;
 use strict;
-use warnings;
-
+use warnings FATAL => 'all';
 use Test::More;
-TODO:{
-    local $TODO="Not implemented";ok 1, "test";
+plan tests => 3;
+
+BEGIN {
+    use_ok('Mojo::Base');
+    use_ok('Mojo::UserAgent');
+    use_ok('WebService::Rollbar::Notifier') || print "Bail out!\n";
 }
-
-done_testing()
-
+diag( 'Testing WebService::Rollbar::Notifier'
+    . " $WebService::Rollbar::Notifier::VERSION, Perl $], $^X" );
