@@ -134,7 +134,7 @@ will receive in its `@_` the [Mojo::UserAgent](https://metacpan.org/pod/Mojo::Us
 performed the call and [Mojo::Transaction::HTTP](https://metacpan.org/pod/Mojo::Transaction::HTTP) object with the
 response.
 
-## `notify`
+## `->notify()`
 
     $roll->notify('debug', "Message to send", {
         any      => 'custom',
@@ -150,7 +150,7 @@ response.
     my $json_response = $roll->notify('debug', "Message to send");
     say decode_json($json_response;);
 
-Takes two mandatory and open optional arguments. Always returns
+Takes two mandatory and one optional arguments. Always returns
 true value if we're making non-blocking calls (see
 `callback` argument to constructor). Otherwise, returns the response
 as JSON _string_. The arguments are:
@@ -196,7 +196,7 @@ that specifies the message to send to [www.rollbar.com](http://www.rollbar.com).
 **Optional**. Takes a hashref that will be converted to JSON and
 sent along with the notification's message.
 
-## `critical`
+## `->critical()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-scalar-optional.png">
@@ -208,7 +208,7 @@ sent along with the notification's message.
 
     $roll->notify( 'critical', ... );
 
-## `error`
+## `->error()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-scalar-optional.png">
@@ -220,7 +220,7 @@ sent along with the notification's message.
 
     $roll->notify( 'error', ... );
 
-## `warning`
+## `->warning()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-scalar-optional.png">
@@ -232,7 +232,7 @@ sent along with the notification's message.
 
     $roll->notify( 'warning', ... );
 
-## `info`
+## `->info()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-scalar-optional.png">
@@ -244,7 +244,7 @@ sent along with the notification's message.
 
     $roll->notify( 'info', ... );
 
-## `debug`
+## `->debug()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-scalar-optional.png">
@@ -258,7 +258,7 @@ sent along with the notification's message.
 
 # ACCESSORS/MODIFIERS
 
-## `access_token`
+## `->access_token()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-optional.png"> <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/out-scalar.png">
@@ -269,7 +269,7 @@ sent along with the notification's message.
 
 Getter/setter for `access_token` argument to `->new()`.
 
-## `code_version`
+## `->code_version()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-optional.png"> <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/out-scalar.png">
@@ -280,7 +280,7 @@ Getter/setter for `access_token` argument to `->new()`.
 
 Getter/setter for `code_version` argument to `->new()`.
 
-## `environment`
+## `->environment()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar-optional.png"> <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/out-scalar.png">
@@ -291,7 +291,7 @@ Getter/setter for `code_version` argument to `->new()`.
 
 Getter/setter for `environment` argument to `->new()`.
 
-## `callback`
+## `->callback()`
 
 <div>
     <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-subref.png"> <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/out-subref.png">

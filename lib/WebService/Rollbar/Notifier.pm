@@ -205,7 +205,7 @@ will receive in its C<@_> the L<Mojo::UserAgent> object that
 performed the call and L<Mojo::Transaction::HTTP> object with the
 response.
 
-=head2 C<notify>
+=head2 C<< ->notify() >>
 
     $roll->notify('debug', "Message to send", {
         any      => 'custom',
@@ -261,7 +261,7 @@ that specifies the message to send to L<www.rollbar.com|http://www.rollbar.com>.
 B<Optional>. Takes a hashref that will be converted to JSON and
 sent along with the notification's message.
 
-=head2 C<critical>
+=head2 C<< ->critical() >>
 
 =for pod_spiffy in scalar scalar optional
 
@@ -271,7 +271,7 @@ sent along with the notification's message.
 
     $roll->notify( 'critical', ... );
 
-=head2 C<error>
+=head2 C<< ->error() >>
 
 =for pod_spiffy in scalar scalar optional
 
@@ -281,7 +281,7 @@ sent along with the notification's message.
 
     $roll->notify( 'error', ... );
 
-=head2 C<warning>
+=head2 C<< ->warning() >>
 
 =for pod_spiffy in scalar scalar optional
 
@@ -291,7 +291,7 @@ sent along with the notification's message.
 
     $roll->notify( 'warning', ... );
 
-=head2 C<info>
+=head2 C<< ->info() >>
 
 =for pod_spiffy in scalar scalar optional
 
@@ -301,7 +301,7 @@ sent along with the notification's message.
 
     $roll->notify( 'info', ... );
 
-=head2 C<debug>
+=head2 C<< ->debug() >>
 
 =for pod_spiffy in scalar scalar optional
 
@@ -313,7 +313,7 @@ sent along with the notification's message.
 
 =head1 ACCESSORS/MODIFIERS
 
-=head2 C<access_token>
+=head2 C<< ->access_token() >>
 
 =for pod_spiffy in scalar optional | out scalar
 
@@ -322,7 +322,7 @@ sent along with the notification's message.
 
 Getter/setter for C<access_token> argument to C<< ->new() >>.
 
-=head2 C<code_version>
+=head2 C<< ->code_version() >>
 
 =for pod_spiffy in scalar optional | out scalar
 
@@ -331,7 +331,7 @@ Getter/setter for C<access_token> argument to C<< ->new() >>.
 
 Getter/setter for C<code_version> argument to C<< ->new() >>.
 
-=head2 C<environment>
+=head2 C<< ->environment() >>
 
 =for pod_spiffy in scalar optional | out scalar
 
@@ -340,7 +340,7 @@ Getter/setter for C<code_version> argument to C<< ->new() >>.
 
 Getter/setter for C<environment> argument to C<< ->new() >>.
 
-=head2 C<callback>
+=head2 C<< ->callback() >>
 
 =for pod_spiffy in subref | out subref
 
