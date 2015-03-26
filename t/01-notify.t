@@ -37,4 +37,10 @@ my $sample = {
     'err' => 0,
 };
 
-cmp_deeply decode_json($res), $sample, 'Response data looks sane';
+my $answer = eval { decode_json($res) };
+if ( $@ ) {
+    diag "We failed to decode JSON response, which was: [$res]\n"
+        . "The exception we received is $@";
+}
+
+cmp_deeply $answer, $sample, 'Response data looks sane';

@@ -1,4 +1,8 @@
 Revision history for WebService-Rollbar-Notifier
 
+1.001002 2015-03-26
+    - Added extra diagnostics in tests to help us figure out why so
+      many of them fail currently
+
 1.001001 2015-03-23
     - First version released on an unsuspecting world
