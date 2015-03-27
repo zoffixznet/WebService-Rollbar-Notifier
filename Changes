@@ -1,5 +1,13 @@
 Revision history for WebService-Rollbar-Notifier
 
+1.001003 2015-03-26
+    - Added needed prereq
+    - Added more informative tests (on failure)
+    [BREAKING]
+    - Changed return value of non-blocking call to ->notify
+      to return Mojo::Transaction::HTTP object, instead of plain
+      response
+
 1.001002 2015-03-26
     - Added extra diagnostics in tests to help us figure out why so
       many of them fail currently

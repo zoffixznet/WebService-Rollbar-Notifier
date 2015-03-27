@@ -7,6 +7,7 @@ use Test::Deep;
 
 plan tests => 3;
 
+use Data::Dumper;
 use JSON::MaybeXS;
 use WebService::Rollbar::Notifier;
 
@@ -23,7 +24,7 @@ can_ok $rollbar, qw/
 /;
 
 my $res = $rollbar->info(
-    'Running test 01-notify.t',
+    'v1.001003 Running test 01-notify.t',
     {
         perl_version => $^V,
     },
@@ -37,9 +38,16 @@ my $sample = {
     'err' => 0,
 };
 
-my $answer = eval { decode_json($res) };
+    unless ( $res->success ) {
+    diag 'Failed to successfully send request. About to fail. Dumping '
+        . 'what we received for debugging purposes: '
+        . Dumper $res;
+}
+
+my $answer = eval { decode_json($res->res->body) };
 if ( $@ ) {
-    diag "We failed to decode JSON response, which was: [$res]\n"
+    diag 'We failed to decode JSON response, which was: ['
+        . $res->res->body . "]\n"
         . "The exception we received is $@";
 }
 
