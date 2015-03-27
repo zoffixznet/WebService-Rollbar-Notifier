@@ -38,17 +38,22 @@ my $sample = {
     'err' => 0,
 };
 
+SKIP: {
     unless ( $res->success ) {
-    diag 'Failed to successfully send request. About to fail. Dumping '
-        . 'what we received for debugging purposes: '
-        . Dumper $res;
-}
+        skip q{We don't seem to have a network connection. Timeout error.}, 1
+            if $res->error->{message} eq 'Connect timeout';
 
-my $answer = eval { decode_json($res->res->body) };
-if ( $@ ) {
-    diag 'We failed to decode JSON response, which was: ['
-        . $res->res->body . "]\n"
-        . "The exception we received is $@";
-}
+        diag 'Failed to successfully send request. About to fail. Dumping '
+            . 'what we received for debugging purposes: '
+            . Dumper $res;
+    }
 
-cmp_deeply $answer, $sample, 'Response data looks sane';
+    my $answer = eval { decode_json($res->res->body) };
+    if ( $@ ) {
+        diag 'We failed to decode JSON response, which was: ['
+            . $res->res->body . "]\n"
+            . "The exception we received is $@";
+    }
+
+    cmp_deeply $answer, $sample, 'Response data looks sane';
+}

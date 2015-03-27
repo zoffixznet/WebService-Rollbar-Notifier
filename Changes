@@ -1,5 +1,8 @@
 Revision history for WebService-Rollbar-Notifier
 
+1.001004 2015-03-26
+    - Made tests skip 'Connect timeout' errors
+
 1.001003 2015-03-26
     - Added needed prereq
     - Added more informative tests (on failure)

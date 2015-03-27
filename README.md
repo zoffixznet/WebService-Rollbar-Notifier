@@ -147,13 +147,13 @@ response.
 
     use JSON::MaybeXS;
     $roll->callback(undef);
-    my $json_response = $roll->notify('debug', "Message to send");
-    say decode_json($json_response;);
+    my $response = $roll->notify('debug', "Message to send");
+    say decode_json( $response->res->body );
 
 Takes two mandatory and one optional arguments. Always returns
 true value if we're making non-blocking calls (see
 `callback` argument to constructor). Otherwise, returns the response
-as JSON _string_. The arguments are:
+as [Mojo::Transaction::HTTP](https://metacpan.org/pod/Mojo::Transaction::HTTP) object. The arguments are:
 
 ### First argument
 
