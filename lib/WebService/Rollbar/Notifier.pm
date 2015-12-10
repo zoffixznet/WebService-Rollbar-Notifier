@@ -9,7 +9,8 @@ use warnings;
 use Mojo::Base -base;
 use Mojo::UserAgent;
 
-my $API_URL = 'https://api.rollbar.com/api/1/';
+# HTTPS for some reason fails on Solaris, based on smoker tests
+my $API_URL = ($^O eq 'solaris'?'http':'https').'://api.rollbar.com/api/1/';
 
 has _ua => sub { Mojo::UserAgent->new; };
 has callback => sub {
@@ -114,6 +115,13 @@ WebService::Rollbar::Notifier - send messages to www.rollbar.com service
 
 This Perl module allows for blocking and non-blocking
 way to send messages to L<www.rollbar.com|http://www.rollbar.com> service.
+
+=head1 HTTPS ON SOLARIS
+
+Note, this module will use HTTPS on anything but Solaris, where it will switch
+to use plain HTTP. Based on CPAN Testers, the module fails with HTTPS there,
+but since I don't have a Solaris box, I did not bother investigating this
+fully. Patches are more than welcome.
 
 =head1 METHODS
 

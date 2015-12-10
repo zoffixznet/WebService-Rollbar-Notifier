@@ -2,6 +2,7 @@ Revision history for WebService-Rollbar-Notifier
 
 1.002001 2015-12-10
     - Fix failing tests on newer Mojolicious (#5)
+    - Use plain HTTP on Solaris (#3)
 
 1.001004 2015-03-26
     - Made tests skip 'Connect timeout' errors
