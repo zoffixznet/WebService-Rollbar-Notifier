@@ -26,7 +26,7 @@ can_ok $rollbar, qw/
 my $res = $rollbar->info(
     'v1.001003 Running test 01-notify.t',
     {
-        perl_version => $^V,
+        perl_version => "$^V",
     },
 );
 
