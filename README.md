@@ -55,6 +55,7 @@ fully. Patches are more than welcome.
         # all these are optional; defaults shown:
         environment     => 'production',
         code_version    => undef,
+        framework       => undef,
         callback        => sub {},
     );
 
@@ -104,6 +105,20 @@ Takes a string up to **40 characters long**. Describes the version
 of the application code. Rollbar understands these formats:
 semantic version (e.g. `2.1.12`), integer (e.g. `45`),
 git SHA (e.g. `3da541559918a808c2402bba5012f6c60b27661c`).
+
+### `framework`
+
+<div>
+    <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-scalar.png">
+</div>
+
+    my $roll = WebService::Rollbar::Notifier->new(
+        ...
+        framework    => undef,
+    );
+
+**Optional**. **By default** is not specified.
+The name of the framework your code uses
 
 ### `callback`
 

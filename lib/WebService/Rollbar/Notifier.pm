@@ -19,7 +19,7 @@ has callback => sub {
 };
 
 has environment => 'production';
-has [ qw/access_token  code_version/ ];
+has [ qw/access_token  code_version framework language/ ];
 
 sub critical { my $self = shift; $self->notify( 'critical', @_ ); }
 sub error    { my $self = shift; $self->notify( 'error',    @_ ); }
@@ -33,7 +33,7 @@ sub notify {
 
     my @optionals = (
         map +( defined $self->$_ ? ( $_ => $self->$_ ) : () ),
-            qw/code_version/
+            qw/code_version framework language/
     );
 
     my $response = $self->_ua->post(
@@ -135,6 +135,7 @@ fully. Patches are more than welcome.
         # all these are optional; defaults shown:
         environment     => 'production',
         code_version    => undef,
+        framework       => undef,
         callback        => sub {},
     );
 
@@ -178,6 +179,18 @@ Takes a string up to B<40 characters long>. Describes the version
 of the application code. Rollbar understands these formats:
 semantic version (e.g. C<2.1.12>), integer (e.g. C<45>),
 git SHA (e.g. C<3da541559918a808c2402bba5012f6c60b27661c>).
+
+=head3 C<framework>
+
+=for pod_spiffy in scalar
+
+    my $roll = WebService::Rollbar::Notifier->new(
+        ...
+        framework    => undef,
+    );
+
+B<Optional>. B<By default> is not specified.
+The name of the framework your code uses
 
 =head3 C<callback>
 
