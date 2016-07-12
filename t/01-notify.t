@@ -8,7 +8,6 @@ use Test::Deep;
 plan tests => 3;
 
 use Data::Dumper;
-use JSON::MaybeXS;
 use WebService::Rollbar::Notifier;
 
 my $rollbar = WebService::Rollbar::Notifier->new(
@@ -48,8 +47,8 @@ SKIP: {
             . Dumper $res;
     }
 
-    my $answer = eval { decode_json($res->res->body) };
-    if ( $@ ) {
+    my $answer = $res->res->json;
+    if ( not defined $answer) {
         diag 'We failed to decode JSON response, which was: ['
             . $res->res->body . "]\n"
             . "The exception we received is $@";

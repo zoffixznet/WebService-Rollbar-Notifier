@@ -11,7 +11,7 @@ my $roll = WebService::Rollbar::Notifier->new(
     callback => undef,
 );
 
-my $res = $roll->debug("Testing example stuff!", { foo => 'bar',
+my $tx = $roll->debug("Testing example stuff!", { foo => 'bar',
     caller => scalar(caller()),
     meow => {
         mew => {
@@ -20,6 +20,5 @@ my $res = $roll->debug("Testing example stuff!", { foo => 'bar',
     },
 });
 
-use JSON::MaybeXS;
 use Data::Dumper;
-print Dumper [ decode_json $res ];
+print Dumper [ $tx->res->json ];
