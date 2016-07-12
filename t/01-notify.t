@@ -8,11 +8,10 @@ use Test::Deep;
 plan tests => 3;
 
 use Data::Dumper;
-use JSON::MaybeXS;
 use WebService::Rollbar::Notifier;
 
 my $rollbar = WebService::Rollbar::Notifier->new(
-    access_token => 'dc851d5abb5c41edad589c336d49004e',
+    access_token => $ENV{TEST_ROLLBAR_ACCESS_TOKEN} || 'dc851d5abb5c41edad589c336d49004e',
     callback => undef, # block to read response
 );
 
@@ -24,7 +23,7 @@ can_ok $rollbar, qw/
 /;
 
 my $res = $rollbar->info(
-    'v1.001003 Running test 01-notify.t',
+    $WebService::Rollbar::Notifier::VERSION . ' Running test 01-notify.t',
     {
         perl_version => "$^V",
     },
@@ -48,8 +47,8 @@ SKIP: {
             . Dumper $res;
     }
 
-    my $answer = eval { decode_json($res->res->body) };
-    if ( $@ ) {
+    my $answer = $res->res->json;
+    if ( not defined $answer) {
         diag 'We failed to decode JSON response, which was: ['
             . $res->res->body . "]\n"
             . "The exception we received is $@";

@@ -7,11 +7,11 @@ use lib qw{lib ../lib};
 use WebService::Rollbar::Notifier;
 
 my $roll = WebService::Rollbar::Notifier->new(
-    access_token => 'dc851d5abb5c41edad589c336d49004e',
+    access_token => $ENV{TEST_ROLLBAR_ACCESS_TOKEN} || 'dc851d5abb5c41edad589c336d49004e',
     callback => undef,
 );
 
-my $res = $roll->debug("Testing example stuff!", { foo => 'bar',
+my $tx = $roll->debug("Testing example stuff!", { foo => 'bar',
     caller => scalar(caller()),
     meow => {
         mew => {
@@ -20,6 +20,5 @@ my $res = $roll->debug("Testing example stuff!", { foo => 'bar',
     },
 });
 
-use JSON::MaybeXS;
 use Data::Dumper;
-print Dumper [ decode_json $res ];
+print Dumper [ $tx->res->json ];

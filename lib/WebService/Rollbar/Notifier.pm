@@ -58,7 +58,7 @@ sub notify {
 
                 notifier => {
                     name => 'WebService::Rollbar::Notifier',
-                    version => '1.1.1',
+                    version => $VERSION,
                 },
 
                 context => scalar(caller 1),
@@ -224,10 +224,10 @@ response.
     # if we're doing blocking calls, then return value will be
     # the response JSON
 
-    use JSON::MaybeXS;
+    use Data::Dumper;;
     $roll->callback(undef);
     my $response = $roll->notify('debug', "Message to send");
-    say decode_json( $response->res->body );
+    say Dumper( $response->res->json );
 
 Takes two mandatory and one optional arguments. Always returns
 true value if we're making non-blocking calls (see
