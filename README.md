@@ -34,6 +34,13 @@ WebService::Rollbar::Notifier - send messages to www.rollbar.com service
 This Perl module allows for blocking and non-blocking
 way to send messages to [www.rollbar.com](http://www.rollbar.com) service.
 
+# HTTPS ON SOLARIS
+
+Note, this module will use HTTPS on anything but Solaris, where it will switch
+to use plain HTTP. Based on CPAN Testers, the module fails with HTTPS there,
+but since I don't have a Solaris box, I did not bother investigating this
+fully. Patches are more than welcome.
+
 # METHODS
 
 ## `->new()`
@@ -145,10 +152,10 @@ response.
     # if we're doing blocking calls, then return value will be
     # the response JSON
 
-    use JSON::MaybeXS;
+    use Data::Dumper;;
     $roll->callback(undef);
     my $response = $roll->notify('debug', "Message to send");
-    say decode_json( $response->res->body );
+    say Dumper( $response->res->json );
 
 Takes two mandatory and one optional arguments. Always returns
 true value if we're making non-blocking calls (see
