@@ -58,7 +58,7 @@ sub notify {
 
                 notifier => {
                     name => 'WebService::Rollbar::Notifier',
-                    version => '1.1.1',
+                    version => $VERSION,
                 },
 
                 context => scalar(caller 1),
