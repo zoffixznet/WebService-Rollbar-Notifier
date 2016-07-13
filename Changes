@@ -1,5 +1,8 @@
 Revision history for WebService-Rollbar-Notifier
 
+1.002003 2016-07-15
+    - Add experimental report_trace and report_message methods
+
 1.002002 2016-07-14
     - Added support for 'framework' and 'language'
     - Send $VERSION to Rollbar as notifier version

@@ -6,6 +6,8 @@ use warnings;
 
 # VERSION
 
+use Carp;
+use Scalar::Util qw/blessed/;
 use Mojo::Base -base;
 use Mojo::UserAgent;
 
@@ -27,41 +29,148 @@ sub warning  { my $self = shift; $self->notify( 'warning',  @_ ); }
 sub info     { my $self = shift; $self->notify( 'info',     @_ ); }
 sub debug    { my $self = shift; $self->notify( 'debug',    @_ ); }
 
+sub _parse_message_param {
+    my $message = shift;
+
+    if (ref($message) eq 'ARRAY') {
+        return ($message->[0], $message->[1]);
+    } else {
+        return ($message, {} );
+    }
+}
+sub report_message {
+    my ($self) = shift;
+    my ($message, $request_params) = @_;
+
+    my ($body, $custom) = _parse_message_param($message);
+
+    return $self->_post(
+        {
+            message => {
+                body    => $body,
+                %{ $custom },
+            },
+        },
+        $request_params,
+    );
+}
+
 sub notify {
     my $self = shift;
     my ( $severity, $message, $custom ) = @_;
 
-    my @optionals = (
+    return $self->report_message( [$message, $custom], {level => $severity} );
+}
+
+
+my @frame_optional_fields =
+    qw/lineno colno method code context argspec varargspec keywordspec locals /
+;
+
+sub _parse_exception_params {
+    my @params = @_;
+
+    my $request_params =
+        ref $params[-1] eq 'HASH'
+            ? pop @params
+            : {}
+    ;
+    my $frames = _extract_frames(pop @params);
+
+    my ($class, $message, $description) = @params;
+
+    return (
+        {
+            class       => $class,
+            (defined $message     ? (message => $message) : ()),
+            (defined $description ? (description => $description) : ()),
+            hrump => 1,
+        },
+        $frames,
+        $request_params,
+    );
+}
+sub _devel_stacktrace_frame_to_rollbar {
+    my $frame = shift;
+    return {
+        filename    => $frame->filename,
+        lineno      => $frame->line,
+        method      => $frame->subroutine,
+        # code
+        # context {}
+        # varargspec: args
+        # locals: { args => ... }
+    }
+}
+sub _extract_frames {
+    my $trace = shift;
+
+    if ( ref($trace) eq 'ARRAY' ) {
+        # Assume rollbar-ready frames
+        return $trace;
+    }
+    if ( blessed($trace) and $trace->isa("Devel::StackTrace") ) {
+        return [
+            map { _devel_stacktrace_frame_to_rollbar( $_ ) }
+                $trace->frames
+        ];
+    }
+
+    return ();
+}
+
+sub report_trace {
+    my $self = shift;
+
+    my ($exception_data, $frames, $request_params) = _parse_exception_params(@_);
+
+    return $self->_post(
+        {
+            trace => {
+                exception   => $exception_data,
+                frames      => $frames,
+            }
+        },
+        $request_params,
+    );
+}
+
+sub _post {
+    my $self = shift;
+    my ( $body, $request_optionals ) = @_;
+
+    my @instance_optionals = (
         map +( defined $self->$_ ? ( $_ => $self->$_ ) : () ),
             qw/code_version framework language/
+    );
+    my @request_optionals = (
+        map +( exists $request_optionals->{$_} ? ( $_ => $request_optionals->{$_} ) : () ),
+            qw/level context request person server client custom fingerprint uuid /
     );
 
     my $response = $self->_ua->post(
         $API_URL . 'item/',
         json => {
             access_token => $self->access_token,
-            data  => {
+            data => {
                 environment => $self->environment,
-                body => {
-                    message => {
-                        body => $message,
-                        ( defined $custom ? ( %$custom ) : () ),
-                    },
-                },
 
-                platform => $^O,
-                title   => $message,
-                timestamp   => time(),
-                level   => $severity,
+                body => $body,
 
-                @optionals,
+                platform  => $^O,
+                timestamp => time(),
+
+                @instance_optionals,
+
+                context => scalar( caller 3 ),
+
+                @request_optionals,
 
                 notifier => {
                     name => 'WebService::Rollbar::Notifier',
                     version => $VERSION,
                 },
 
-                context => scalar(caller 1),
             },
         },
 
@@ -226,7 +335,7 @@ will receive in its C<@_> the L<Mojo::UserAgent> object that
 performed the call and L<Mojo::Transaction::HTTP> object with the
 response.
 
-=head2 C<< ->notify() >>
+=head2 C<< -E<gt>notify() >>
 
     $roll->notify('debug', "Message to send", {
         any      => 'custom',
@@ -332,6 +441,69 @@ sent along with the notification's message.
 
     $roll->notify( 'debug', ... );
 
+=for pod_spiffy start experimental section
+
+Methods listed below are experimental and might change in future!
+
+=head2 C<< ->report_message($message, $additional_parameters) >>
+
+Sends "message" type event to Rollbar.
+
+    $roll->report_message("Message to send");
+
+Parameters:
+
+=head3 $message
+
+B<Mandatory>. Specifies message text to be sent.
+
+In addition to text your message can contain additional custom metadata fields.
+In this case C<$message> must be an arrayref, where first element is message
+text and second is hashref with metadata.
+
+    $roll->report_message(["Message to send", { some_key => "value" });
+
+=head3 $additional_parameters
+
+B<Optional>. Takes a hashref which may contain any additional top-level fields
+that you want to send with your message. Full list of fields supported by
+Rollbar is available at L<https://rollbar.com/docs/api/items_post/>.
+
+Notable useful field is C<level> which can be used to set severity of your
+message. Default level is "info". See ->notify() for list of supported levels.
+Other example fields supported by Rollbar include: context, request, person, server.
+
+    $roll->report_message("Message to send", { context => "controller#action" });
+
+=head2 C<< ->report_trace($exception_class,..., $frames, $additional_parameters >>
+
+Reports "trace" type event to Rollbar, which is basically an exception.
+
+=head3 $exception_class
+
+B<Mandatory>. This is exception class name (string).
+
+It can be followed by 0 to 2 additional scalar parameters, which are
+interpreted as exception message and exception description accordingly.
+
+    $roll->report_trace("MyException", $frames);
+    $roll->report_trace("MyException", "Total failure in module X", $frames);
+    $roll->report_trace("MyException", "Total failure in module X", "Description", $frames);
+
+=head3 $frames
+
+B<Mandatory>. Contains frames from stacktrace. It can be either
+L<Devel::StackTrace> object (in which case we extract frames from this object) or
+arrayref with frames in Rollbar format (described in
+L<https://rollbar.com/docs/api/items_post/>)
+
+=head3 $additional_parameters
+
+B<Optional>. Seel L</$additional_parameters> for details. Note that for
+exceptions default level is "error".
+
+=for pod_spiffy end experimental section
+
 =head1 ACCESSORS/MODIFIERS
 
 =head2 C<< ->access_token() >>
@@ -369,6 +541,7 @@ Getter/setter for C<environment> argument to C<< ->new() >>.
     $roll->callback( sub { say "Foo!"; } );
 
 Getter/setter for C<callback> argument to C<< ->new() >>.
+
 
 =head1 SEE ALSO
 

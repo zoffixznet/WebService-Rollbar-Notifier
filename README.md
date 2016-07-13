@@ -278,6 +278,73 @@ sent along with the notification's message.
 
     $roll->notify( 'debug', ... );
 
+<div>
+    <div style="display: table; height: 91px; background: url(http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/section-experimental.png) no-repeat left; padding-left: 120px;" ><div style="display: table-cell; vertical-align: middle;">
+</div>
+
+Methods listed below are experimental and might change in future!
+
+## `->report_message($message, $additional_parameters)`
+
+Sends "message" type event to Rollbar.
+
+    $roll->report_message("Message to send");
+
+Parameters:
+
+### $message
+
+**Mandatory**. Specifies message text to be sent.
+
+In addition to text your message can contain additional custom metadata fields.
+In this case `$message` must be an arrayref, where first element is message
+text and second is hashref with metadata.
+
+    $roll->report_message(["Message to send", { some_key => "value" });
+
+### $additional\_parameters
+
+**Optional**. Takes a hashref which may contain any additional top-level fields
+that you want to send with your message. Full list of fields supported by
+Rollbar is available at [https://rollbar.com/docs/api/items\_post/](https://rollbar.com/docs/api/items_post/).
+
+Notable useful field is `level` which can be used to set severity of your
+message. Default level is "info". See ->notify() for list of supported levels.
+Other example fields supported by Rollbar include: context, request, person, server.
+
+    $roll->report_message("Message to send", { context => "controller#action" });
+
+## `->report_trace($exception_class,..., $frames, $additional_parameters`
+
+Reports "trace" type event to Rollbar, which is basically an exception.
+
+### $exception\_class
+
+**Mandatory**. This is exception class name (string).
+
+It can be followed by 0 to 2 additional scalar parameters, which are
+interpreted as exception message and exception description accordingly.
+
+    $roll->report_trace("MyException", $frames);
+    $roll->report_trace("MyException", "Total failure in module X", $frames);
+    $roll->report_trace("MyException", "Total failure in module X", "Description", $frames);
+
+### $frames
+
+**Mandatory**. Contains frames from stacktrace. It can be either
+[Devel::StackTrace](https://metacpan.org/pod/Devel::StackTrace) object (in which case we extract frames from this object) or
+arrayref with frames in Rollbar format (described in
+[https://rollbar.com/docs/api/items\_post/](https://rollbar.com/docs/api/items_post/))
+
+### $additional\_parameters
+
+**Optional**. Seel ["$additional\_parameters"](#additional_parameters) for details. Note that for
+exceptions default level is "error".
+
+<div>
+    </div></div>
+</div>
+
 # ACCESSORS/MODIFIERS
 
 ## `->access_token()`
