@@ -88,7 +88,7 @@ sub verify_response {
     if (not $tx->success) {
         diag 'Failed to successfully send request. About to fail. Dumping '
             . 'what we received for debugging purposes: '
-            . $tx;
+            . $tx->res->to_string;
     }
 
     my $answer = $tx->res->json;
