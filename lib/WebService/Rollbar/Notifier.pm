@@ -84,7 +84,6 @@ sub _parse_exception_params {
             class       => $class,
             (defined $message     ? (message => $message) : ()),
             (defined $description ? (description => $description) : ()),
-            hrump => 1,
         },
         $frames,
         $request_params,
