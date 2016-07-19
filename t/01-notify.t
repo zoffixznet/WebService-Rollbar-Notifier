@@ -18,67 +18,75 @@ isa_ok $rollbar, 'WebService::Rollbar::Notifier';
 can_ok $rollbar, qw/
     access_token  environment  code_version
     critical error warning info debug notify
-    callback
+    callback framework language server
 /;
 
 my $VER = $WebService::Rollbar::Notifier::VERSION;
 
 {
-    my $desc = "Simple info message";
+    my $desc = "simple info message";
     my $tx = $rollbar->info(
-        "$VER $desc in " . __FILE__,
+        "$VER $desc",
         {
             perl_version => "$^V",
         },
     );
-    verify_response( $tx, "Simple info message")
+    verify_response( $tx, "Simple info message");
 }
 
 {
-    my $desc = "Same info message, but using report_message";
+    my $desc = "same info message, but using report_message";
     my $tx = $rollbar->report_message(
         [
-            "$VER $desc in " . __FILE__, { perl_version => "$^V" },
+            "$VER $desc", { perl_version => "$^V" },
         ],
     );
-    verify_response( $tx, $desc)
+    verify_response( $tx, $desc);
 }
 {
-    my $desc = "warn message, with some additional fields";
+    my $desc = "warn message with some additional fields";
     $rollbar->framework("test_framework");
     my $tx = $rollbar->report_message(
-        "$VER $desc in " . __FILE__,
+        "$VER $desc",
         {
             level => "warn",
             custom => {
                 something => "here",
             },
             context => "our_own",
+            server => { host => "sample_host" }
         }
     );
     $rollbar->framework(undef);
-    verify_response( $tx, $desc)
+    verify_response( $tx, $desc);
 }
 
 {
     my $desc = "simplest trace";
     my $tx = $rollbar->report_trace(
-        "$VER $desc in " . __FILE__,
+        "$VER $desc",
         [ # stacktrace frames
             { filename => '01-notify.t', lineno => __LINE__ }
         ],
 
     );
-    verify_response( $tx, $desc)
+    verify_response( $tx, $desc);
 }
 {
     my $desc = "Devel::StackTrace trace";
     my $tx = $rollbar->report_trace(
-        "$VER $desc in " . __FILE__,
+        "$VER $desc",
         "Exception message",
         _get_deeper_stacktrace(),
     );
-    verify_response( $tx, $desc)
+    verify_response( $tx, $desc);
+}
+{
+    my $desc = "setting server via notifier instance";
+    $rollbar->server({ host => "sample_host" });
+    my $tx = $rollbar->report_message("$VER $desc");
+    verify_response( $tx, $desc);
+    $rollbar->server(undef);
 }
 
 

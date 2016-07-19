@@ -56,6 +56,7 @@ fully. Patches are more than welcome.
         environment     => 'production',
         code_version    => undef,
         framework       => undef,
+        server          => undef,
         callback        => sub {},
     );
 
@@ -119,6 +120,28 @@ git SHA (e.g. `3da541559918a808c2402bba5012f6c60b27661c`).
 
 **Optional**. **By default** is not specified.
 The name of the framework your code uses
+
+### `server`
+
+<div>
+    <img alt="" src="http://zoffix.com/CPAN/Dist-Zilla-Plugin-Pod-Spiffy/icons/in-hashref.png">
+</div>
+
+    my $roll = WebService::Rollbar::Notifier->new(
+        ...
+        server    => {
+            # Rollbar claims to understand following keys:
+            host    => "server_name",
+            root    => "/path/to/app/root/dir",
+            branch  => "branch_name",
+            code_version => "b6437f45b7bbbb15f5eddc2eace4c71a8625da8c",
+        }
+    );
+
+**Optional**. **By default** is not specifed.
+Takes a hashref, which is used as "server" part of every Rollbar request made
+by this notifier instance. See [https://rollbar.com/docs/api/items\_post/](https://rollbar.com/docs/api/items_post/) for
+detailed description of supported fields.
 
 ### `callback`
 

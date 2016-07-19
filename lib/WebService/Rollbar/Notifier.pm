@@ -21,7 +21,7 @@ has callback => sub {
 };
 
 has environment => 'production';
-has [ qw/access_token  code_version framework language/ ];
+has [ qw/access_token  code_version framework language server/ ];
 
 sub critical { my $self = shift; $self->notify( 'critical', @_ ); }
 sub error    { my $self = shift; $self->notify( 'error',    @_ ); }
@@ -140,7 +140,7 @@ sub _post {
 
     my @instance_optionals = (
         map +( defined $self->$_ ? ( $_ => $self->$_ ) : () ),
-            qw/code_version framework language/
+            qw/code_version framework language server/
     );
     my @request_optionals = (
         map +( exists $request_optionals->{$_} ? ( $_ => $request_optionals->{$_} ) : () ),
@@ -244,6 +244,7 @@ fully. Patches are more than welcome.
         environment     => 'production',
         code_version    => undef,
         framework       => undef,
+        server          => undef,
         callback        => sub {},
     );
 
@@ -299,6 +300,26 @@ git SHA (e.g. C<3da541559918a808c2402bba5012f6c60b27661c>).
 
 B<Optional>. B<By default> is not specified.
 The name of the framework your code uses
+
+=head3 C<server>
+
+=for pod_spiffy in hashref
+
+    my $roll = WebService::Rollbar::Notifier->new(
+        ...
+        server    => {
+            # Rollbar claims to understand following keys:
+            host    => "server_name",
+            root    => "/path/to/app/root/dir",
+            branch  => "branch_name",
+            code_version => "b6437f45b7bbbb15f5eddc2eace4c71a8625da8c",
+        }
+    );
+
+B<Optional>. B<By default> is not specifed.
+Takes a hashref, which is used as "server" part of every Rollbar request made
+by this notifier instance. See L<https://rollbar.com/docs/api/items_post/> for
+detailed description of supported fields.
 
 =head3 C<callback>
 
