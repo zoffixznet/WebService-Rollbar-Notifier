@@ -33,7 +33,7 @@ sub _parse_message_param {
     my $message = shift;
 
     if (ref($message) eq 'ARRAY') {
-        return ($message->[0], $message->[1]);
+        return ($message->[0], $message->[1]||{});
     } else {
         return ($message, {} );
     }

@@ -24,6 +24,13 @@ can_ok $rollbar, qw/
 my $VER = $WebService::Rollbar::Notifier::VERSION;
 
 {
+    my $desc = "simplest info message";
+    my $tx = $rollbar->info(
+        "$VER $desc in " . __FILE__,
+    );
+    verify_response( $tx, "Simple info message")
+}
+{
     my $desc = "simple info message";
     my $tx = $rollbar->info(
         "$VER $desc",
