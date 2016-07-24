@@ -138,7 +138,7 @@ The name of the framework your code uses
         }
     );
 
-**Optional**. **By default** is not specifed.
+**Optional**. **By default** is not specified.
 Takes a hashref, which is used as "server" part of every Rollbar request made
 by this notifier instance. See [https://rollbar.com/docs/api/items\_post/](https://rollbar.com/docs/api/items_post/) for
 detailed description of supported fields.
@@ -361,7 +361,7 @@ arrayref with frames in Rollbar format (described in
 
 ### $additional\_parameters
 
-**Optional**. Seel ["$additional\_parameters"](#additional_parameters) for details. Note that for
+**Optional**. See ["$additional\_parameters"](#additional_parameters) for details. Note that for
 exceptions default level is "error".
 
 <div>

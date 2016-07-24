@@ -316,7 +316,7 @@ The name of the framework your code uses
         }
     );
 
-B<Optional>. B<By default> is not specifed.
+B<Optional>. B<By default> is not specified.
 Takes a hashref, which is used as "server" part of every Rollbar request made
 by this notifier instance. See L<https://rollbar.com/docs/api/items_post/> for
 detailed description of supported fields.
@@ -519,7 +519,7 @@ L<https://rollbar.com/docs/api/items_post/>)
 
 =head3 $additional_parameters
 
-B<Optional>. Seel L</$additional_parameters> for details. Note that for
+B<Optional>. See L</$additional_parameters> for details. Note that for
 exceptions default level is "error".
 
 =for pod_spiffy end experimental section
