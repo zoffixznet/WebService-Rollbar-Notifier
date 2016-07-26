@@ -26,7 +26,7 @@ my $VER = $WebService::Rollbar::Notifier::VERSION;
 {
     my $desc = "simplest info message";
     my $tx = $rollbar->info(
-        "$VER $desc in " . __FILE__,
+        "$VER $desc",
     );
     verify_response( $tx, "Simple info message")
 }
@@ -45,7 +45,7 @@ my $VER = $WebService::Rollbar::Notifier::VERSION;
     my $desc = "same info message, but using report_message";
     my $tx = $rollbar->report_message(
         [
-            "$VER $desc", { perl_version => "$^V" },
+            "$VER $desc", { level => 'info', perl_version => "$^V" },
         ],
     );
     verify_response( $tx, $desc);

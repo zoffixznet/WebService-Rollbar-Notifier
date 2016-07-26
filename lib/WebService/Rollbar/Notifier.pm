@@ -490,7 +490,7 @@ that you want to send with your message. Full list of fields supported by
 Rollbar is available at L<https://rollbar.com/docs/api/items_post/>.
 
 Notable useful field is C<level> which can be used to set severity of your
-message. Default level is "info". See ->notify() for list of supported levels.
+message. Default level is "error". See ->notify() for list of supported levels.
 Other example fields supported by Rollbar include: context, request, person, server.
 
     $roll->report_message("Message to send", { context => "controller#action" });
